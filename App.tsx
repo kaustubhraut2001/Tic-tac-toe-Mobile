@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native'
 import React, { useState } from 'react'
 
 const App = () => {
@@ -56,7 +56,18 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {renderGrid()}
+    <StatusBar/>
+       { gamestate ? <Text style={styles.cellText}>{winMessage}</Text>  :(
+        <View style={styles.gridContainer}>
+          {gamestate.map((value, index) => (
+            <View key={index} style={styles.gridRow}>
+              {renderGridCell(index)}
+            </View>
+          ))}
+        </View>
+       )}
+        
+       {/* renderGrid()} */}
     </SafeAreaView>
   )
 }
