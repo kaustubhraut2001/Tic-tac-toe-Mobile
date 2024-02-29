@@ -1,117 +1,96 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+const App = () => {
+  const [iscross, setIsCross] = useState<boolean>(false);
+  const [winMessage, setWinMessage] = useState<string>("");
+  const [gamestate, setGamestate] = useState<string[]>(new Array(9).fill('empty'));
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+  const reloadGame = () => {
+    setIsCross(false);
+    setWinMessage("");
+    setGamestate(new Array(9).fill('empty'));
+  }
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  const isWinner = () => {
+    // Check for winning conditions
+  }
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+  const onChangeIcon = (index: number) => {
+    if (winMessage) {
+      return;
+    }
+    
+    if (gamestate[index] === 'empty') {
+      const newGameState = [...gamestate];
+      newGameState[index] = iscross ? 'cross' : 'circle';
+      setGamestate(newGameState);
+      setIsCross(!iscross);
+    } 
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+    isWinner();
+  }
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const renderGridCell = (index: number) => {
+    return (
+      <TouchableOpacity
+        style={styles.gridCell}
+        onPress={() => onChangeIcon(index)}
+      >
+        <Text style={styles.cellText}>{gamestate[index]}</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  const renderGrid = () => {
+    return (
+      <View style={styles.gridContainer}>
+        {gamestate.map((value, index) => (
+          <View key={index} style={styles.gridRow}>
+            {renderGridCell(index)}
+          </View>
+        ))}
+      </View>
+    );
+  }
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+    <SafeAreaView style={styles.container}>
+      {renderGrid()}
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0', // Background color of the container
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    backgroundColor: '#fff', // Background color of the grid
+    padding: 5, // Padding around the grid
+    borderRadius: 10, // Border radius of the grid
+    borderWidth: 1, // Border width of the grid
+    borderColor: '#ccc', // Border color of the grid
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  gridRow: {
+    flexDirection: 'row',
   },
-  highlight: {
-    fontWeight: '700',
+  gridCell: {
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc', // Border color of each cell
+  },
+  cellText: {
+    fontSize: 40, // Font size of the cell text
+    color: '#333', // Color of the cell text
   },
 });
 
